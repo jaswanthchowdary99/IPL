@@ -1,50 +1,34 @@
-
-
 function findMostDismissedBowler(deliveries) {
-  const dismissed = {};
+  const dismissed = deliveries.reduce((acc, runs) => {
+    const batsman = runs.player_dismissed;
+    const bowler = runs.bowler;
 
-  for (let index of deliveries) {
-    let batsman = index.player_dismissed;
-    let bowler = index.bowler;
-
-    if (batsman.trim() == '') {
-      continue;
+    if (batsman.trim() === '') {
+      return acc;
     }
 
-    if (dismissed[batsman]) {
-      if (dismissed[batsman][bowler]) {
-        dismissed[batsman][bowler] += 1;
-      } else {
-        dismissed[batsman][bowler] = 1;
-      }
-    } else {
-      dismissed[batsman] = { [bowler]: 1 };
-    }
-  }
+    acc[batsman] = acc[batsman] || {};
+    acc[batsman][bowler] = (acc[batsman][bowler] || 0) + 1;
+    return acc;
+  }, {});
 
-  let playerDismissedByAnotherPlayer = {
-    player_dismissed: null,
-    bowler_name: null,
-    count: 0,
-  };
+  const playerDismissed = Object.entries(dismissed).reduce(
+    (result, [batsman, bowlers]) => {
+      Object.entries(bowlers).forEach(([bowlerName, outCount]) => {
+        if (outCount > result.count) {
+          result = {
+            player_dismissed: batsman,
+            bowler_name: bowlerName,
+            count: outCount,
+          };
+        }
+      });
+      return result;
+    },
+    { player_dismissed: null, bowler_name: null, count: 0 }
+  );
 
-  for (const batsmanname in dismissed) {
-    const bowlers = dismissed[batsmanname];
-    for (const bowlerName in bowlers) {
-      const outCount = bowlers[bowlerName];
-
-      if (outCount > playerDismissedByAnotherPlayer.count) {
-        playerDismissedByAnotherPlayer = {
-          player_dismissed: batsmanname,
-          bowler_name: bowlerName,
-          count: outCount,
-        };
-      }
-    }
-  }
-
-  return playerDismissedByAnotherPlayer;
+  return playerDismissed;
 }
 
-
-module.exports = {findMostDismissedBowler};
+module.exports = { findMostDismissedBowler };

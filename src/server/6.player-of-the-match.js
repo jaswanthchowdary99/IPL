@@ -1,43 +1,35 @@
 
 
-
-function findMostPOTMAwardsPerSeason(matches){
-
-  let match ={};
-  for(let index of matches){
-    let season = index.season;
-    let playerOfMatch = index.player_of_match;
-    if(match[season] == undefined){
-        match[season] = {};
-    }
-    if(match[season][playerOfMatch] == undefined){
-        match[season][playerOfMatch] = 1
-    }
-    else{
-        match[season][playerOfMatch]++;
-    }
-  }
-  let highestPlayers = [];
-
-  for (let season in match) {
+function findMostPOTMAwardsPerSeason(matches) {
+    const result = matches.reduce((acc, match) => {
+      const season = match.season;
+      const playerOfMatch = match.player_of_match;
+  
+      acc[season] = acc[season] || {};
+      acc[season][playerOfMatch] = (acc[season][playerOfMatch] || 0) + 1;
+  
+      return acc;
+    }, {});
+  
+    const highestPlayers = Object.entries(result).reduce((players, [season, playersObj]) => {
       let maxAwards = 0;
       let playerOfMatch = null;
   
-      for (let player in match[season]) {
-          if (match[season][player] > maxAwards) {
-              maxAwards = match[season][player];
-              playerOfMatch = player;
-          }
-      }
+      Object.entries(playersObj).forEach(([player, awards]) => {
+        if (awards > maxAwards) {
+          maxAwards = awards;
+          playerOfMatch = player;
+        }
+      });
   
-      highestPlayers.push(season,playerOfMatch );
+      players.push({ season, playerOfMatch });
+      return players;
+    }, []);
+  
+    return highestPlayers;
   }
-
-  return highestPlayers;
-}
-
-
-
- module.exports = {findMostPOTMAwardsPerSeason};
+  
+  module.exports = { findMostPOTMAwardsPerSeason };
+  
 
   

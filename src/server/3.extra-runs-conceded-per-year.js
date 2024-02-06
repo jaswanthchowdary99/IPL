@@ -1,19 +1,13 @@
 
 
 function calculateExtraRunsConcededIn2016 (matches,deliveries){
-  let extraRuns = {};
-  for (let data of matches) {
-    for(let runs of deliveries){
-      if (data.season == '2016' && data.id == runs.match_id) {
-        if (extraRuns[runs.bowling_team] === undefined) {
-          extraRuns[runs.bowling_team] = 0;
-        } else {
-          extraRuns[runs.bowling_team] += Number(runs.extra_runs);
-        }
-      }
-    }    }
- 
-  return extraRuns;
+  return deliveries.reduce((extraRuns,runs) => {
+    const matchingData = matches.find(match => match.id == runs.match_id && match.season =='2016');
+    if(matchingData){
+      extraRuns[runs.bowling_team] = (extraRuns[runs.bowling_team] || 0) + Number(runs.extra_runs);
+    }
+    return extraRuns;
+  },{});
 }
 
    

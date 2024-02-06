@@ -1,18 +1,20 @@
 
 
 function calculateMatchesWonPerTeamPerYear(matches){
-  let matchWonPerYear={}
-  for(let data of matches){
-      if(!matchWonPerYear[data.season]){
-          matchWonPerYear[data.season]={}
-      }if(!matchWonPerYear[data.season][data.winner]){
-          matchWonPerYear[data.season][data.winner]=1
-      }else{
-          matchWonPerYear[data.season][data.winner]++;
-      }
-  
-      }
-      return matchWonPerYear;
+return matches.reduce((acc, match) => {
+    const {season ,winner} = match;
+    if(acc[season] == undefined){
+        acc[season] = {};
+    }
+    if(acc[season][winner] == undefined){
+        acc[season][winner] = 1;
+    }
+    else{
+        acc[season][winner]++;
+    }
+    return acc;
+
+},{});
 }
 
  

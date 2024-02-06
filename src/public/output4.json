@@ -1,42 +1,42 @@
 [
   {
     "bowlerName": "J Yadav",
-    "economicRate": 4.097560975609756
+    "economy": 4.097560975609756
   },
   {
     "bowlerName": "R Ashwin",
-    "economicRate": 5.7238493723849375
+    "economy": 5.7238493723849375
   },
   {
     "bowlerName": "S Nadeem",
-    "economicRate": 5.8604651162790695
+    "economy": 5.8604651162790695
   },
   {
     "bowlerName": "V Kohli",
-    "economicRate": 6
+    "economy": 6
   },
   {
     "bowlerName": "Z Khan",
-    "economicRate": 6.1558441558441555
+    "economy": 6.1558441558441555
   },
   {
     "bowlerName": "Parvez Rasool",
-    "economicRate": 6.206896551724139
+    "economy": 6.206896551724139
   },
   {
     "bowlerName": "MC Henriques",
-    "economicRate": 6.26923076923077
+    "economy": 6.26923076923077
   },
   {
     "bowlerName": "MA Starc",
-    "economicRate": 6.7749077490774905
+    "economy": 6.7749077490774905
   },
   {
     "bowlerName": "Sandeep Sharma",
-    "economicRate": 6.870967741935484
+    "economy": 6.870967741935484
   },
   {
     "bowlerName": "CJ Anderson",
-    "economicRate": 7.043478260869566
+    "economy": 7.043478260869566
   }
 ]

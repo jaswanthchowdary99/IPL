@@ -1,21 +1,15 @@
 
 
 function findTeamsTossAndMatchWins(matches){
-  const teamsWonTossAndMatch = {};
-
-    for (let info of matches) {
-      let tossWinner = info.toss_winner;
-      let matchWinner = info.winner;
-      if(tossWinner == matchWinner){
-        if(teamsWonTossAndMatch[tossWinner] == undefined){
-          teamsWonTossAndMatch[tossWinner] = 1
-        }
-        else{
-          teamsWonTossAndMatch[tossWinner] = teamsWonTossAndMatch[tossWinner] + 1
-        }
-      }
+  return matches.reduce((tossAndMatchWins,match)=>{
+    const tossWon = match.toss_winner;
+    const matchWon = match.winner;
+    if(tossWon == matchWon){
+      tossAndMatchWins[matchWon] = (tossAndMatchWins[matchWon] || 0) + 1; 
     }
-    return teamsWonTossAndMatch;
+    return tossAndMatchWins;
+  },{});
+
 }
 
 
