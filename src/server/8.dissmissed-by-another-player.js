@@ -1,3 +1,8 @@
+const { log } = require('console');
+const csv = require('csv-parser');
+const path = require('path');
+const fs = require('fs');
+
 function findMostDismissedBowler(deliveries) {
   const dismissed = deliveries.reduce((acc, runs) => {
     const batsman = runs.player_dismissed;
@@ -31,4 +36,22 @@ function findMostDismissedBowler(deliveries) {
   return playerDismissed;
 }
 
-module.exports = { findMostDismissedBowler };
+function writeResultToFile(result, outputFileName) {
+  fs.writeFileSync(path.join(__dirname, outputFileName), JSON.stringify(result, null, 2));
+}
+
+function main() {
+  let deliveries = [];
+  fs.createReadStream(path.join(__dirname, '../Data/deliveries.csv'))
+    .pipe(csv({}))
+    .on('data', (data) => deliveries.push(data))
+    .on('end', () => {
+      const mostDismissedBowler = findMostDismissedBowler(deliveries);
+      writeResultToFile(mostDismissedBowler, "../public/output/8.dissmissed-by-another-player.json");
+    })
+    .on('error', (error) => {
+      console.error('Error:', error);
+    });
+}
+
+main();

@@ -1,3 +1,8 @@
+const { log } = require('console');
+const csv = require('csv-parser');
+const path = require('path');
+const fs = require('fs');
+
 function findBestEconomyInSuperOvers(matches) {
   const economySuperOver = matches.reduce((acc, match) => {
     const bowler = match.bowler;
@@ -16,12 +21,30 @@ function findBestEconomyInSuperOvers(matches) {
     return acc;
   }, {});
 
-  let economyRate = Object.entries(economySuperOver).map(([bowler, { runs, balls }]) => {
-    return { bowler, superOverEconomy: (runs / balls) * 6 };
+  let economyRate = Object.entries(economySuperOver).map(([bowlerName, { runs, balls }]) => {
+    return { bowler: bowlerName, superOverEconomy: (runs / balls) * 6 };
   });
 
   let topBowlers = economyRate.sort((a, b) => a.superOverEconomy - b.superOverEconomy).slice(0, 1);
   return topBowlers;
 }
 
-module.exports = { findBestEconomyInSuperOvers };
+function writeResultToFile(result, outputFileName) {
+  fs.writeFileSync(path.join(__dirname, outputFileName), JSON.stringify(result, null, 2));
+}
+
+function main() {
+  let matches = [];
+  fs.createReadStream(path.join(__dirname, '../Data/deliveries.csv'))
+    .pipe(csv({}))
+    .on('data', (data) => matches.push(data))
+    .on('end', () => {
+      const bestEconomyInSuperOvers = findBestEconomyInSuperOvers(matches);
+      writeResultToFile(bestEconomyInSuperOvers, "../public/output/9.best-economy-superOver.json");
+    })
+    .on('error', (error) => {
+      console.error('Error:', error);
+    });
+}
+
+main();
