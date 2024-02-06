@@ -1,35 +1,55 @@
+const { log } = require('console');
+const csv = require('csv-parser');
+const path = require('path');
+const fs = require('fs');
 
+function findBestEconomyInSuperOvers(matches) {
+  const economySuperOver = {};
+  
+  for (const match of matches) {
+    const bowler = match.bowler;
+    const superOver = Number(match.is_super_over);
+    const totalRuns = Number(match.total_runs);
+    const legByRuns = Number(match.legbye_runs);
+    const byRuns = Number(match.bye_runs);
+    const extraRuns = Number(match.extra_runs);
 
-function findBestEconomyInSuperOvers(matches){
- const economyRates ={};
- for(let index of matches){
-    const bowlers = index.bowler;
-    const superOver = Number(index.is_super_over);
-    const totalRuns = Number(index.total_runs);
-    const legByRuns =Number(index.legbye_runs);
-    const  byRuns = Number(index.bye_runs);
-    const extraRuns = Number(index.extra_runs);
-     if(superOver != 0){
+    if (superOver !== 0) {
+      if (!economySuperOver[bowler]) {
+        economySuperOver[bowler] = { runs: 0, balls: 0 };
+      }
 
-        if(economyRates[bowlers] == undefined){
-         economyRates[bowlers] = {runs : 0,balls :0};
-        }
-        else{
-            economyRates[bowlers].runs += totalRuns-legByRuns-byRuns-extraRuns;
-            economyRates[bowlers].balls++;
-        }
-     }
- }
-  let economyRate = [];
-  for( let bowler1 in economyRates){
-    const {runs ,balls} = economyRates[bowler1];
-    let economy = (runs / balls) * 6;
-    economyRate.push({bowler1,economy});
+      economySuperOver[bowler].runs += totalRuns - legByRuns - byRuns - extraRuns;
+      economySuperOver[bowler].balls++;
+    }
   }
-  let sortedBowlers = economyRate.sort((a,b) => a.economy - b.economy);
-  let topBowlers = sortedBowlers.slice(0,1);
 
-  return topBowlers ;
+  const economyRate = [];
+  for (const bowlerName in economySuperOver) {
+    const { runs, balls } = economySuperOver[bowlerName];
+    economyRate.push({ bowler: bowlerName, superOverEconomy: (runs / balls) * 6 });
+  }
+
+  const topBowlers = economyRate.sort((a, b) => a.superOverEconomy - b.superOverEconomy).slice(0, 1);
+  return topBowlers;
 }
 
-module.exports = {findBestEconomyInSuperOvers};
+function writeResultToFile(result, outputFileName) {
+  fs.writeFileSync(path.join(__dirname, outputFileName), JSON.stringify(result, null, 2));
+}
+
+function main() {
+  let matches = [];
+  fs.createReadStream(path.join(__dirname, '../Data/deliveries.csv'))
+    .pipe(csv({}))
+    .on('data', (data) => matches.push(data))
+    .on('end', () => {
+      const bestEconomyInSuperOvers = findBestEconomyInSuperOvers(matches);
+      writeResultToFile(bestEconomyInSuperOvers, "../public/output/9.best-economy-superOver.json");
+    })
+    .on('error', (error) => {
+      console.error('Error:', error);
+    });
+}
+
+main();

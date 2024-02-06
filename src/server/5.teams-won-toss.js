@@ -1,22 +1,34 @@
+const { log } = require('console');
+const csv = require('csv-parser');
+const path = require('path');
+const fs = require('fs');
 
+function findTeamsTossAndMatchWins() {
+  let matches = [];
+  fs.createReadStream(path.join(__dirname, '../Data/matches.csv'))
+    .pipe(csv({}))
+    .on('data', (data) => matches.push(data))
+    .on('end', () => {
+      let teamsWonTossAndMatch = {};
 
-function findTeamsTossAndMatchWins(matches){
-  const teamsWonTossAndMatch = {};
+      for (const info of matches) {
+        const tossWinner = info.toss_winner;
+        const matchWinner = info.winner;
 
-    for (let info of matches) {
-      let tossWinner = info.toss_winner;
-      let matchWinner = info.winner;
-      if(tossWinner == matchWinner){
-        if(teamsWonTossAndMatch[tossWinner] == undefined){
-          teamsWonTossAndMatch[tossWinner] = 1
-        }
-        else{
-          teamsWonTossAndMatch[tossWinner] = teamsWonTossAndMatch[tossWinner] + 1
+        if (tossWinner == matchWinner) {
+          if (teamsWonTossAndMatch[tossWinner] === undefined) {
+            teamsWonTossAndMatch[tossWinner] = 1;
+          } else {
+            teamsWonTossAndMatch[tossWinner]++;
+          }
         }
       }
-    }
-    return teamsWonTossAndMatch;
+
+      fs.writeFileSync(path.join(__dirname, "../public/output/5.teams-won-toss.json"), JSON.stringify(teamsWonTossAndMatch, null, 2));
+    })
+    .on('error', (error) => {
+      console.error('Error:', error);
+    });
 }
 
-
-module.exports = {findTeamsTossAndMatchWins};
+findTeamsTossAndMatchWins();
