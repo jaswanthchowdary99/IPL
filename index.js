@@ -20,7 +20,7 @@ const port = process.env.PORT || 8000;
 
 server.get('/', (request, response) => {
   try {
-    response.render('index');
+    response.render('index.ejs');
   } catch (error) {
     console.error(error);
     response.status(500).send('Error rendering HTML');
