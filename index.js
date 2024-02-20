@@ -1,9 +1,8 @@
 const express = require('express');
 const port = process.env.PORT || 8000;
 const ejs = require('ejs');
-const fs =require('fs');
-const path = require('path'); 
-const Highcharts = require('highcharts')
+const fs = require('fs');
+const path = require('path');
 const matchPerYear = require('./src/server/1.match-per-year.js');
 const calculateMatchesWonPerTeamPerYear = require('./src/server/2.match-won-per-year.js');
 const calculateExtraRunsConcededIn2016 = require('./src/server/3.extra-runs-conceded-per-year.js');
@@ -13,48 +12,54 @@ const findMostPOTMAwardsPerSeason = require('./src/server/6.player-of-the-match.
 const calculateHighestBatsmanStrikeRate = require('./src/server/7.strike-rate.js');
 const findMostDismissedBowler = require('./src/server/8.dissmissed-by-another-player.js');
 const findBestEconomyInSuperOvers = require('./src/server/9.best-ecocnomy-superOvers.js');
-const { request } = require('https');
 
 const server = express();
 
+server.set('view engine', 'ejs');
+server.set('views', path.join(__dirname, 'views'));
+server.use(express.static('public'));
+
+server.get('/', (request, response) => {
+  try {
+    const htmlPath = path.resolve('index.html');
+    const html = fs.readFileSync(htmlPath, 'utf8');
+    response.send(html);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send('Error rendering HTML');
+  }
+});
 
 server.get('/1', async (request, response) => {
   try {
-    console.log('output executed succesfully',matchPerYear);
-      const result = await require('./src/public/output/1.match-per-year.json');
-
-      const chartConfig = {
-          chart: {
-              type: 'bar',
-          },
-          title: {
-              text: 'Matches played per year',
-          },
-          xAxis: {
-              categories: Object.keys(result),
-              title: {
-                  text: 'Years',
-              },
-          },
-          yAxis: {
-              title: {
-                  text: 'Total Matches played',
-              },
-          },
-          series: [{
-              name: '',
-              data: Object.values(result),
-          }],
-      };
-
-      const htmlPath = path.resolve(__dirname, 'index.html');
-      const html = fs.readFileSync(htmlPath, 'utf8');
-      const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-      response.status(200).send(renderedHtml);
+    const result = await require('./src/public/output/1.match-per-year.json');
+    const chartConfig = {
+      chart: {
+        type: 'bar',
+      },
+      title: {
+        text: 'Matches played per year',
+      },
+      xAxis: {
+        categories: Object.keys(result),
+        title: {
+          text: 'Years',
+        },
+      },
+      yAxis: {
+        title: {
+          text: 'Total Matches played',
+        },
+      },
+      series: [{
+        name: '',
+        data: Object.values(result),
+      }],
+    };
+    response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   } catch (error) {
-      console.error(error);
-      response.status(500).send('Error rendering HTML');
+    console.error(error);
+    response.status(500).send('Error rendering HTML');
   }
 });
 
@@ -92,13 +97,7 @@ server.get('/2',async(request,response)=>{
     })),
 };
 
-          
-          
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(500).send('data not found');
@@ -136,12 +135,7 @@ server.get('/3',async(request,response)=>{
           data: Object.values(result),
         }],
       };
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
-
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
        response.status(500).send('data not found');
@@ -184,10 +178,7 @@ server.get('/3',async(request,response)=>{
         }],
       };
       
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-      response.status(200).send(renderedHtml);
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
     }
     catch(error){
          
@@ -229,12 +220,7 @@ server.get('/5',async(request,response)=>{
         }],
       };
       
-      
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(200).send('data not found');
@@ -273,17 +259,11 @@ server.get('/6',async(request,response)=>{
       }],
     };
 
-    // Iterate over the JSON data and populate chartConfig
     result.forEach(entry => {
       chartConfig.xAxis.categories.push(`${entry.season}: ${entry.playerOfMatch}`);
-      chartConfig.series[0].data.push(1); // Assuming count is always 1 for each player in the provided data
+      chartConfig.series[0].data.push(1); 
     });
-      
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+    response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(200).send('data not found');
@@ -323,11 +303,7 @@ server.get('/7',async(request,response)=>{
       
       
       
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(200).send('data not found');
@@ -369,12 +345,7 @@ server.get('/8',async(request,response)=>{
         }],
       };
       
-      
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(200).send('data not found');
@@ -414,12 +385,7 @@ server.get('/9',async(request,response)=>{
           data: result.map(entry => entry.superOverEconomy),
         }],
       };
-      
-    const htmlPath = path.resolve(__dirname, 'index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    const renderedHtml = ejs.render(html, { chartConfig: JSON.stringify(chartConfig) });
-
-    response.status(200).send(renderedHtml);
+      response.render('chart', { chartConfig: JSON.stringify(chartConfig) });
   }
   catch(error){
     response.status(200).send('data not found');
@@ -434,3 +400,5 @@ server.listen(port,(error)=>{
         console.log(`succesfully running in http://localhost:${port}`)
       }
 })
+
+
