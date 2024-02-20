@@ -1,7 +1,4 @@
 const express = require('express');
-const port = process.env.PORT || 8000;
-const ejs = require('ejs');
-const fs = require('fs');
 const path = require('path');
 const matchPerYear = require('./src/server/1.match-per-year.js');
 const calculateMatchesWonPerTeamPerYear = require('./src/server/2.match-won-per-year.js');
@@ -17,13 +14,13 @@ const server = express();
 
 server.set('view engine', 'ejs');
 server.set('views', path.join(__dirname, 'views'));
-server.use(express.static('public'));
+server.use(express.static(path.join(__dirname, 'public')));
+
+const port = process.env.PORT || 8000;
 
 server.get('/', (request, response) => {
   try {
-    const htmlPath = path.resolve('index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    response.send(html);
+    response.render('index');
   } catch (error) {
     console.error(error);
     response.status(500).send('Error rendering HTML');
@@ -62,7 +59,6 @@ server.get('/1', async (request, response) => {
     response.status(500).send('Error rendering HTML');
   }
 });
-
 
 
 
