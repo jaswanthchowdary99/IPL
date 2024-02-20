@@ -53,3 +53,4 @@ function calculateTopEconomicalBowlersIn2015() {
 }
 
 calculateTopEconomicalBowlersIn2015();
+module.exports = {calculateTopEconomicalBowlersIn2015}

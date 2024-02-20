@@ -29,6 +29,7 @@ function writeResultToFile(result, outputFileName) {
 }
 
 matchesPerYear();
+module.exports = {matchesPerYear};
 
     
     

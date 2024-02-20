@@ -38,3 +38,5 @@ function writeResultToFile(result, outputFileName) {
 }
 
 calculateMatchesWonPerTeamPerYear();
+
+module.exports = {calculateMatchesWonPerTeamPerYear}

@@ -50,6 +50,8 @@ function main() {
     .on('error', (error) => {
       console.error('Error:', error);
     });
-}
+  }
 
 main();
+
+module.exports = {main};

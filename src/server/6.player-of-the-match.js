@@ -50,3 +50,4 @@ function findMostPOTMAwardsPerSeason() {
 }
 
 findMostPOTMAwardsPerSeason();
+module.exports = {findMostPOTMAwardsPerSeason};

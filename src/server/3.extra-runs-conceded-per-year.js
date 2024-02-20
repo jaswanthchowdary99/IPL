@@ -51,3 +51,4 @@ function calculateExtraRunsConcededIn2016() {
 }
 
 calculateExtraRunsConcededIn2016();
+module.exports = {calculateExtraRunsConcededIn2016}

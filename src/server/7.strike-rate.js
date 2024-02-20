@@ -58,3 +58,4 @@ function calculateHighestBatsmanStrikeRate() {
 }
 
 calculateHighestBatsmanStrikeRate();
+module.exports = {calculateHighestBatsmanStrikeRate}

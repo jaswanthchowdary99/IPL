@@ -60,3 +60,4 @@ function findMostDismissedBowler() {
 }
 
 findMostDismissedBowler();
+module.exports = {findMostDismissedBowler};

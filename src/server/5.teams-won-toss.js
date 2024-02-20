@@ -32,3 +32,4 @@ function findTeamsTossAndMatchWins() {
 }
 
 findTeamsTossAndMatchWins();
+module.exports = {findTeamsTossAndMatchWins};
