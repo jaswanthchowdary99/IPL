@@ -65,30 +65,33 @@ server.get('/2',async(request,response)=>{
   try{
           console.log('output executed succesfully',calculateMatchesWonPerTeamPerYear);
           const result = await require('./src/public/output/2.matches-won-per-year.json');
-          const chartConfig = {
-            chart: {
-              type: 'column', 
-            },
-            title: {
-              text: 'Matches Won played per year',
-            },
-            xAxis: {
-              categories: Object.keys(result),
-              title: {
-                text: 'Years',
-              },
-            },
-            yAxis: {
-              title: {
-                text: 'Wins',
-              },
-            },
-            series: Object.entries(result).map(([year, teamWins]) => ({
-              name: year,
-              data: Object.entries(teamWins).map(([team, wins]) => wins),
-            })),
-          };
-          
+         const chartConfig = {
+    chart: {
+        type: 'column',
+    },
+    title: {
+        text: 'Matches Won per Team per Year in IPL',
+    },
+    xAxis: {
+        categories: Object.keys(result),
+        title: {
+            text: 'Years',
+        },
+    },
+    yAxis: {
+        title: {
+            text: 'Wins',
+        },
+    },
+    series: Object.entries(result).map(([year, teamWins]) => ({
+        name: year,
+        data: Object.entries(teamWins).map(([team, wins]) => ({
+            name: team,
+            y: wins, // Use the number of wins as the y-axis value
+        })),
+    })),
+};
+
           
           
     const htmlPath = path.resolve(__dirname, 'index.html');
@@ -247,30 +250,34 @@ server.get('/6',async(request,response)=>{
     console.log('output executed succesfully',findMostPOTMAwardsPerSeason);
     const result = await require('./src/public/output/6.player-of-the-match.json');
     const chartConfig = {
-        chart: {
-          type: 'column',
-        },
+      chart: {
+        type: 'column',
+      },
+      title: {
+        text: 'Player of the Match for Each Season',
+      },
+      xAxis: {
+        categories: [],
         title: {
-          text: 'Player of the Match for Each Season',
+          text: 'Seasons',
         },
-        xAxis: {
-          categories: result.map(entry => entry.season),
-          title: {
-            text: 'Seasons',
-          },
+      },
+      yAxis: {
+        title: {
+          text: 'Player of the Match Count',
         },
-        yAxis: {
-          title: {
-            text: 'Player of the Match Count',
-          },
-        },
-        series: [{
-          name: 'Player of the Match',
-          data: result.map(entry => 1), 
-        }],
-      };
-      
-      
+      },
+      series: [{
+        name: 'Player of the Match',
+        data: [],
+      }],
+    };
+
+    // Iterate over the JSON data and populate chartConfig
+    result.forEach(entry => {
+      chartConfig.xAxis.categories.push(`${entry.season}: ${entry.playerOfMatch}`);
+      chartConfig.series[0].data.push(1); // Assuming count is always 1 for each player in the provided data
+    });
       
     const htmlPath = path.resolve(__dirname, 'index.html');
     const html = fs.readFileSync(htmlPath, 'utf8');
@@ -340,7 +347,7 @@ server.get('/8',async(request,response)=>{
     const result = await require('./src/public/output/8.dissmissed-by-another-player.json');
     const chartConfig = {
         chart: {
-          type: 'line',
+          type: 'bar',
         },
         title: {
           text: 'Player Dismissals by Bowler',
