@@ -1,5 +1,5 @@
 
-fetch('http://localhost:4000/1')
+fetch('https://ipl-wzrl.onrender.com/1')
     .then((response) => response.json())
     .then((data) => {
         Highcharts.chart('matchesPerYear', {
@@ -34,7 +34,7 @@ fetch('http://localhost:4000/1')
     });
 
 
-fetch('http://localhost:4000/2')
+fetch('https://ipl-wzrl.onrender.com/2')
     .then((response) => response.json())
     .then((data) => {
         const years = Object.keys(data);
@@ -76,7 +76,7 @@ fetch('http://localhost:4000/2')
     });
 
 
-fetch('http://localhost:4000/3')
+fetch('https://ipl-wzrl.onrender.com/3')
     .then((response) => response.json())
     .then((data) => {
         Highcharts.chart('calculateExtraRunsConcededIn2016', {
@@ -111,7 +111,7 @@ fetch('http://localhost:4000/3')
     });
 
 
-fetch('http://localhost:4000/4')
+fetch('https://ipl-wzrl.onrender.com/4')
     .then((response) => response.json())
     .then((data) => {
         Highcharts.chart('calculateTopEconomicalBowlersIn2015', {
@@ -146,7 +146,7 @@ fetch('http://localhost:4000/4')
     });
 
 
-fetch('http://localhost:4000/5')
+fetch('https://ipl-wzrl.onrender.com/5')
     .then((response) => response.json())
     .then((data) => {
         
@@ -190,7 +190,7 @@ fetch('http://localhost:4000/5')
     });
 
 
-fetch('http://localhost:4000/6')
+fetch('https://ipl-wzrl.onrender.com/6')
     .then((response) => response.json())
     .then((data) => {
         Highcharts.chart('findMostPOTMAwardsPerSeason', {
@@ -232,7 +232,7 @@ fetch('http://localhost:4000/6')
     });
 
 
-fetch('http://localhost:4000/7')
+fetch('https://ipl-wzrl.onrender.com/7')
     .then((response) => response.json())
     .then((data) => {
         const categories = Object.keys(data);
@@ -273,7 +273,7 @@ fetch('http://localhost:4000/7')
       console.error('Error fetching Dismissal Stats data:', error);
     });  
 
-fetch('http://localhost:4000/8')
+fetch('https://ipl-wzrl.onrender.com/8')
     .then((response) => response.json())
     .then((data) => {
     
@@ -314,7 +314,7 @@ fetch('http://localhost:4000/8')
         console.error('Error fetching Dismissal Stats data:', error);
     });
 
-fetch('http://localhost:4000/9')
+fetch('https://ipl-wzrl.onrender.com/9')
     .then((response) => response.json())
     .then((data) => {
         const bestEconomyData = {
